@@ -12,7 +12,9 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
+import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 import java.util.UUID;
 
@@ -45,7 +47,8 @@ public class OAuthController {
     @GetMapping("/callback")
     public String callback(@RequestParam(name = "code")String code,
                            @RequestParam(name = "state")String state,
-                           HttpServletRequest request)
+                           HttpServletRequest request,
+                           HttpServletResponse response)
     {
         AccessToken accessToken = new AccessToken();
         accessToken.setClient_id(client_id);
@@ -62,14 +65,19 @@ public class OAuthController {
         if(githubUser!=null)
         {
             log.info("登录成功");
-            //讲信息存储在 session 中进行长久保存
-            HttpSession session = request.getSession();
-            session.setAttribute("user",githubUser);
+            //讲信息存储在 session 中进行长久保存  ---但是不能在服务器重启时候，让其刷新还在线，现在
+            //实现就是讲生成的 token(UUID) 存储在 cookie 中根据 cookie 进行判断是否之前登录过
+//            HttpSession session = request.getSession();
+//            session.setAttribute("user",githubUser);   放在了 indexController 页面那块
+
             //在 mysql 中存储
             User user = new User();
             user.setCountId(String.valueOf(githubUser.getId()));
             user.setName(githubUser.getName());
-            user.setToken(UUID.randomUUID().toString());
+            String token = UUID.randomUUID().toString();
+            //在 cookie 中进行存储
+            response.addCookie(new Cookie("token",token));
+            user.setToken(token);
             user.setGmtCreate(String.valueOf(System.currentTimeMillis()));
             user.setGmtUpdate(user.getGmtCreate());
             int insert = userMapper.insertUser(user);
@@ -81,7 +89,7 @@ public class OAuthController {
             return "redirect:/";
         }else
             //返回到 index 重新登录
-            return "/";
+            return "index";
 
 
     }

@@ -3,6 +3,8 @@ package com.tigerff.community.mapper;
 import com.tigerff.community.model.User;
 import org.apache.ibatis.annotations.Insert;
 import org.apache.ibatis.annotations.Mapper;
+import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 
 /**
  * @author tigerff
@@ -24,4 +26,6 @@ public interface UserMapper {
      */
     @Insert("insert into user values(null,#{countId},#{name},#{token},#{gmtCreate},#{gmtUpdate})")
     int insertUser(User user);
+    @Select("select * from user where token=#{token}")
+    User findUserByToken(@Param(value = "token") String token);
 }
