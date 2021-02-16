@@ -24,8 +24,10 @@ public interface UserMapper {
      * @param user
      * @return
      */
-    @Insert("insert into user values(null,#{countId},#{name},#{token},#{gmtCreate},#{gmtUpdate})")
+    @Insert("insert into user values(null,#{countId},#{name},#{token},#{gmtCreate},#{gmtUpdate},#{avatarUrl})")
     int insertUser(User user);
     @Select("select * from user where token=#{token}")
     User findUserByToken(@Param(value = "token") String token);
+    @Select("select * from user where id=#{creator}")
+    User findUserById(@Param("creator") Long creator);
 }

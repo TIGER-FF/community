@@ -44,17 +44,17 @@ public class PublishController {
         model.addAttribute("title",title);
         model.addAttribute("content",content);
         model.addAttribute("tag",tag);
-        if(title==null||title.trim()=="")
+        if(title==null||"".equals(title.trim()))
         {
             model.addAttribute("errorMessage"," title 不能为空");
             return "publish";
         }
-        if(content==null||content.trim()=="")
+        if(content==null||"".equals(content.trim()))
         {
             model.addAttribute("errorMessage"," content 不能为空");
             return "publish";
         }
-        if(tag==null||tag.trim()=="")
+        if(tag==null||"".equals(tag.trim()))
         {
             model.addAttribute("errorMessage"," tag 不能为空");
             return "publish";
@@ -77,7 +77,7 @@ public class PublishController {
         question.setContent(content);
         question.setTag(tag);
         question.setTitle(title);
-        question.setGmtCreate(String.valueOf(System.currentTimeMillis()));
+        question.setGmtCreate(System.currentTimeMillis());
         question.setGmtUpdate(question.getGmtCreate());
         question.setReadCount(0);
         question.setWatchCount(0);

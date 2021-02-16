@@ -53,6 +53,7 @@ public class HttpUtils {
                 .url(url)
                 .build();
         try (Response response = client.newCall(request).execute()) {
+            //fastjson 工具中自带开启了 驼峰命名法
             return JSON.parseObject(response.body().string(), GithubUser.class);
         }catch (IOException e)
         {

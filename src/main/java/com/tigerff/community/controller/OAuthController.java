@@ -78,8 +78,9 @@ public class OAuthController {
             //在 cookie 中进行存储
             response.addCookie(new Cookie("token",token));
             user.setToken(token);
-            user.setGmtCreate(String.valueOf(System.currentTimeMillis()));
+            user.setGmtCreate(System.currentTimeMillis());
             user.setGmtUpdate(user.getGmtCreate());
+            user.setAvatarUrl(githubUser.getAvatarUrl());
             int insert = userMapper.insertUser(user);
             if(insert==1)
                 log.info("插入数据成功"+user);

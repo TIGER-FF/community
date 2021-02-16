@@ -1,11 +1,15 @@
 package com.tigerff.community.controller;
 
+import com.tigerff.community.dto.PageInfo;
 import com.tigerff.community.mapper.UserMapper;
+import com.tigerff.community.model.Question;
 import com.tigerff.community.model.User;
+import com.tigerff.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
@@ -20,22 +24,31 @@ import javax.servlet.http.HttpSession;
 public class IndexController {
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    QuestionService questionService;
     @GetMapping("/")
     public String index(HttpServletRequest request,
+                        @RequestParam(name = "page",defaultValue = "1") int page,
+                        @RequestParam(name = "size",defaultValue = "5") int size,
                         Model model)
     {
         Cookie[] cookies = request.getCookies();
-        for(Cookie cookie:cookies)
-        {
-            if(cookie.getName().equals("token")) {
-                //更据 token 去数据库找出 user 信息，放在 session 中
-                User user = userMapper.findUserByToken(cookie.getValue());
-                if (user != null) {
-                    request.getSession().setAttribute("user", user);
-                    return "index";
+        if (cookies!=null) {
+            for (Cookie cookie : cookies) {
+                if (cookie.getName().equals("token")) {
+                    //更据 token 去数据库找出 user 信息，放在 session 中
+                    User user = userMapper.findUserByToken(cookie.getValue());
+                    if (user != null) {
+                        request.getSession().setAttribute("user", user);
+                        break;
+                    }
                 }
             }
         }
+        //每次访问主页，去看数据中提问，并展示到主页--分页--并且在返回结果中包含是谁提问的
+        //提问人信息
+        PageInfo pageInfo=questionService.findQuestions(page,size);
+        model.addAttribute("pageInfo",pageInfo);
         return "index";
     }
 }

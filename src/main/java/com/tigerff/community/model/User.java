@@ -17,6 +17,7 @@ public class User {
     private String countId;
     private String name;
     private String token;
-    private String gmtCreate;
-    private String gmtUpdate;
+    private Long gmtCreate;
+    private Long gmtUpdate;
+    private String avatarUrl;
 }

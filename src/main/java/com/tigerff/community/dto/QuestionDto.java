@@ -1,5 +1,7 @@
-package com.tigerff.community.model;
+package com.tigerff.community.dto;
 
+import com.tigerff.community.model.Question;
+import com.tigerff.community.model.User;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,12 +9,12 @@ import lombok.NoArgsConstructor;
 /**
  * @author tigerff
  * @version 1.0
- * @date 2021/2/15 20:14
+ * @date 2021/2/16 19:15
  */
+@Data
 @AllArgsConstructor
 @NoArgsConstructor
-@Data
-public class Question {
+public class QuestionDto {
     private Long id;
     //创建者 id
     private Long creator;
@@ -24,5 +26,5 @@ public class Question {
     private Integer readCount;
     private Integer watchCount;
     private Integer likeCount;
+    private User user;
 }
-
