@@ -21,12 +21,13 @@ import java.util.List;
 public class ProfileService {
     @Autowired
     QuestionMapper questionMapper;
+
     public PageInfo findCurrentQuestion(User user, int page, int size) {
         Integer totalQuestion = questionMapper.getCurrentCount(user.getId());
         Integer totalPage=(int) Math.ceil(totalQuestion/size);
         if(page<1)
             page=1;
-        if(page>totalPage)
+        if(totalPage>0&&page>totalPage)
             page=totalPage;
         if(size<=0)
             size=5;

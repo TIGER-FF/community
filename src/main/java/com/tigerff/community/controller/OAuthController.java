@@ -4,6 +4,7 @@ import com.tigerff.community.dto.AccessToken;
 import com.tigerff.community.dto.GithubUser;
 import com.tigerff.community.mapper.UserMapper;
 import com.tigerff.community.model.User;
+import com.tigerff.community.model.UserExample;
 import com.tigerff.community.utils.HttpUtils;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,6 +17,7 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.List;
 import java.util.UUID;
 
 /**
@@ -70,28 +72,68 @@ public class OAuthController {
 //            HttpSession session = request.getSession();
 //            session.setAttribute("user",githubUser);   放在了 indexController 页面那块
 
-            //在 mysql 中存储
-            User user = new User();
-            user.setCountId(String.valueOf(githubUser.getId()));
-            user.setName(githubUser.getName());
-            String token = UUID.randomUUID().toString();
-            //在 cookie 中进行存储
-            response.addCookie(new Cookie("token",token));
-            user.setToken(token);
-            user.setGmtCreate(System.currentTimeMillis());
-            user.setGmtUpdate(user.getGmtCreate());
-            user.setAvatarUrl(githubUser.getAvatarUrl());
-            int insert = userMapper.insertUser(user);
-            if(insert==1)
-                log.info("插入数据成功"+user);
+            //判断是否数据中已经存在了这个人
+            UserExample example = new UserExample();
+            example.createCriteria().andCountIdEqualTo(String.valueOf(githubUser.getId()));
+            final List<User> users = userMapper.selectByExample(example);
+            //存在，则更新信息，不存在则去插入信息
+            if(users.size()==0)
+            {//不存在
+                User user = new User();
+                user.setCountId(String.valueOf(githubUser.getId()));
+                user.setName(githubUser.getName());
+                String token = UUID.randomUUID().toString();
+                //在 cookie 中进行存储
+                response.addCookie(new Cookie("token",token));
+                user.setToken(token);
+                user.setGmtCreate(System.currentTimeMillis());
+                user.setGmtUpdate(user.getGmtCreate());
+                user.setAvatarUrl(githubUser.getAvatarUrl());
+                int insert = userMapper.insert(user);
+                if(insert==1)
+                    log.info("插入数据成功"+user);
+                else
+                    log.info("插入数据失败");
+                //登录成功，重定向到 index 页面
+            }
             else
-                log.info("插入数据失败");
-            //登录成功，重定向到 index 页面
+            {
+                //存在
+                User updateUser=new User();
+                updateUser.setName(githubUser.getName());
+                String token = UUID.randomUUID().toString();
+                //在 cookie 中进行存储
+                response.addCookie(new Cookie("token",token));
+                updateUser.setToken(token);
+                updateUser.setGmtUpdate(System.currentTimeMillis());
+                updateUser.setAvatarUrl(githubUser.getAvatarUrl());
+                UserExample userExample = new UserExample();
+                userExample.createCriteria()
+                        .andIdEqualTo(users.get(0).getId());
+                int update = userMapper.updateByExampleSelective(updateUser, userExample);
+                if(update==1)
+                    log.info("更新数据成功"+updateUser);
+                else
+                    log.info("更新数据失败");
+                //登录成功，重定向到 index 页面
+            }
             return "redirect:/";
         }else
             //返回到 index 重新登录
             return "index";
+    }
+    @GetMapping("/logout")
+    public String logout(HttpServletRequest request,
+                         HttpServletResponse response)
+    {
+        //退出登录，就是移除 session 中的对象，并删除 cookie
+        HttpSession session = request.getSession();
+        session.removeAttribute("user");
+        //删除 cookie 就是将这个对象设置为 null 并将最大存活时间设置为 0
+        Cookie cookie = new Cookie("token",null);
+        cookie.setMaxAge(0);
+        response.addCookie(cookie);
 
-
+        return "redirect:/";
     }
 }

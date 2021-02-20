@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
-import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpSession;
 
 /**
  * @author tigerff
@@ -23,8 +23,6 @@ import javax.servlet.http.HttpServletRequest;
 @Slf4j
 @Controller
 public class PublishController {
-    @Autowired
-    UserMapper userMapper;
     @Autowired
     QuestionMapper questionMapper;
     @GetMapping("/publish")
@@ -59,19 +57,9 @@ public class PublishController {
             model.addAttribute("errorMessage"," tag 不能为空");
             return "publish";
         }
-        User user=null;
-        Cookie[] cookies = request.getCookies();
-        for(Cookie cookie:cookies)
-        {
-            if(cookie.getName().equals("token")) {
-                //更据 token 去数据库找出 user 信息，放在 session 中
-                 user= userMapper.findUserByToken(cookie.getValue());
-                if (user != null) {
-                    request.getSession().setAttribute("user", user);
-                }
-                break;
-            }
-        }
+        HttpSession session = request.getSession();
+        User user = (User) session.getAttribute("user");
+
         Question question = new Question();
         question.setCreator(user.getId());
         question.setContent(content);

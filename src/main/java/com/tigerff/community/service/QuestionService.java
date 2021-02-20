@@ -47,7 +47,7 @@ public class QuestionService {
 
         for(Question question:questions)
         {
-            User creator=userMapper.findUserById(question.getCreator());
+            User creator = userMapper.selectByPrimaryKey(question.getCreator());
             QuestionDto questionDto = new QuestionDto();
             BeanUtils.copyProperties(question,questionDto);
             questionDto.setUser(creator);
