@@ -21,7 +21,7 @@
             <div class="media" style="margin-bottom: 15px" th:each="questionDto : ${pageInfo.questionDtos}">
                 <div class="media-left media-middle">
                     <a href="#">
-                        <img style="width: 50px;height: 50px;" class="media-object" th:src="${questionDto.user.avatarUrl}" th:alt="${questionDto.user.name}">
+                        <img style="width: 50px;height: 50px;" class="img-rounded" th:src="${questionDto.user.avatarUrl}" th:alt="${questionDto.user.name}">
                     </a>
                 </div>
                 <div class="media-body">

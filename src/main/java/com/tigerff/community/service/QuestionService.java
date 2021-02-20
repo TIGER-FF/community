@@ -5,7 +5,9 @@ import com.tigerff.community.dto.QuestionDto;
 import com.tigerff.community.mapper.QuestionMapper;
 import com.tigerff.community.mapper.UserMapper;
 import com.tigerff.community.model.Question;
+import com.tigerff.community.model.QuestionExample;
 import com.tigerff.community.model.User;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,11 +28,11 @@ public class QuestionService {
     UserMapper userMapper;
 
     public PageInfo findQuestions(int page, int size) {
-        Integer totalQuestion = questionMapper.getCount();
-        Integer totalPage=(int) Math.ceil(totalQuestion/size);
+        int totalQuestion = (int)questionMapper.countByExample(new QuestionExample());
+        Integer totalPage=(int) Math.ceil(totalQuestion*1.0/size);
         if(page<1)
             page=1;
-        if(page>totalPage)
+        if(totalPage>0&&page>totalPage)
             page=totalPage;
         if(size<=0)
             size=5;
@@ -42,8 +44,11 @@ public class QuestionService {
          * limit 1,5
          */
         pageInfo.setCurrentPage(page);
-        List<Question> questions=questionMapper.findQuestions(size*(page-1),size);
+        //List<Question> questions=questionMapper.findQuestions(size*(page-1),size);
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(size * (page - 1), size));
+
         ArrayList<QuestionDto> questionDtos=new ArrayList<>();
+
 
         for(Question question:questions)
         {

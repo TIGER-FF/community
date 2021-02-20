@@ -6,6 +6,7 @@
 <generatorConfiguration>
     <!--  defaultModelType="flat" 这个不加会出现很多的类，如： XXXKey   -->
     <context id="DB2Tables" targetRuntime="MyBatis3" defaultModelType="flat">
+        <plugin type="org.mybatis.generator.plugins.RowBoundsPlugin"></plugin>
         <!-- nullCatalogMeansCurrent=true   connectionURL 如果你是 mysql8 ,那就要在 connectionURL
             中加入 nullCatalogMeansCurrent=true ，不然会出现不知匹配当前数据库中的表 -->
         <jdbcConnection driverClass="com.mysql.cj.jdbc.Driver"
@@ -31,8 +32,8 @@
             <property name="enableSubPackages" value="true" />
         </javaClientGenerator>
 
-        <table  tableName="user" domainObjectName="User" >
-        </table>
+        <table  tableName="user" domainObjectName="User" ></table>
+        <table  tableName="question" domainObjectName="Question" ></table>
 
     </context>
 </generatorConfiguration>

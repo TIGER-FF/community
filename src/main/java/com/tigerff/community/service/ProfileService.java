@@ -4,7 +4,9 @@ import com.tigerff.community.dto.PageInfo;
 import com.tigerff.community.dto.QuestionDto;
 import com.tigerff.community.mapper.QuestionMapper;
 import com.tigerff.community.model.Question;
+import com.tigerff.community.model.QuestionExample;
 import com.tigerff.community.model.User;
+import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -23,8 +25,12 @@ public class ProfileService {
     QuestionMapper questionMapper;
 
     public PageInfo findCurrentQuestion(User user, int page, int size) {
-        Integer totalQuestion = questionMapper.getCurrentCount(user.getId());
-        Integer totalPage=(int) Math.ceil(totalQuestion/size);
+       // Integer totalQuestion = questionMapper.getCurrentCount(user.getId());
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.createCriteria()
+                .andCreatorEqualTo(user.getId());
+        int totalQuestion = (int)questionMapper.countByExample(questionExample);
+        Integer totalPage=(int) Math.ceil(totalQuestion*1.0/size);
         if(page<1)
             page=1;
         if(totalPage>0&&page>totalPage)
@@ -39,7 +45,11 @@ public class ProfileService {
          * limit 1,5
          */
         pageInfo.setCurrentPage(page);
-        List<Question> questions=questionMapper.findCurrentQuestions(user.getId(),size*(page-1),size);
+        QuestionExample example = new QuestionExample();
+        example.createCriteria()
+                .andCreatorEqualTo(user.getId());
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(example, new RowBounds(size * (page - 1), size));
+
         ArrayList<QuestionDto> questionDtos=new ArrayList<>();
 
         for(Question question:questions)

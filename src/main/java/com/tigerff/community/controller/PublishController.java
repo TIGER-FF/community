@@ -70,7 +70,7 @@ public class PublishController {
         question.setReadCount(0);
         question.setWatchCount(0);
         question.setLikeCount(0);
-        int insert = questionMapper.insertQuestion(question);
+        int insert = questionMapper.insert(question);
         if(insert==1) {
             log.info("\n插入数据成功\n" + question);
             return "redirect:/";
