@@ -20,7 +20,7 @@
             <hr>
             <div class="media" style="margin-bottom: 15px" th:each="questionDto : ${pageInfo.questionDtos}">
                 <div class="media-left media-middle">
-                    <a href="#">
+                    <a th:href="@{'/question/'+${questionDto.id}}">
                         <img style="width: 50px;height: 50px;" class="img-rounded" th:src="${questionDto.user.avatarUrl}" th:alt="${questionDto.user.name}">
                     </a>
                 </div>

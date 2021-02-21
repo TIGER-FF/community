@@ -97,4 +97,13 @@ public class QuestionService {
 
         
     }
+
+    public QuestionDto findQuestionById(Long id) {
+        QuestionDto questionDto=new QuestionDto();
+        Question question = questionMapper.selectByPrimaryKey(id);
+        BeanUtils.copyProperties(question,questionDto);
+        User user = userMapper.selectByPrimaryKey(question.getCreator());
+        questionDto.setUser(user);
+        return questionDto;
+    }
 }
