@@ -2,6 +2,9 @@ package com.tigerff.community.service;
 
 import com.tigerff.community.dto.PageInfo;
 import com.tigerff.community.dto.QuestionDto;
+import com.tigerff.community.exception.CustomizeErrorCode;
+import com.tigerff.community.exception.CustomizeException;
+import com.tigerff.community.mapper.QuestionExMapper;
 import com.tigerff.community.mapper.QuestionMapper;
 import com.tigerff.community.mapper.UserMapper;
 import com.tigerff.community.model.Question;
@@ -22,6 +25,8 @@ import java.util.List;
  */
 @Service
 public class QuestionService {
+    @Autowired
+    QuestionExMapper questionExMapper;
     @Autowired
     QuestionMapper questionMapper;
     @Autowired
@@ -101,9 +106,18 @@ public class QuestionService {
     public QuestionDto findQuestionById(Long id) {
         QuestionDto questionDto=new QuestionDto();
         Question question = questionMapper.selectByPrimaryKey(id);
+        if(question==null)
+        {
+            throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+        }
         BeanUtils.copyProperties(question,questionDto);
         User user = userMapper.selectByPrimaryKey(question.getCreator());
         questionDto.setUser(user);
         return questionDto;
+    }
+
+    //浏览数加一
+    public void incReadCount(Long id) {
+        questionExMapper.incReadCount(id);
     }
 }

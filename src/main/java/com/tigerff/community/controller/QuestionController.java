@@ -26,6 +26,8 @@ public class QuestionController {
                            Model model)
     {
         QuestionDto questionDto=questionService.findQuestionById(id);
+        //增加刷新页面，去增加浏览数
+        questionService.incReadCount(id);
         model.addAttribute("questionDto",questionDto);
         return "question";
     }

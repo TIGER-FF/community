@@ -1,6 +1,8 @@
 package com.tigerff.community.controller;
 
 import com.sun.org.apache.xpath.internal.operations.Mod;
+import com.tigerff.community.exception.CustomizeErrorCode;
+import com.tigerff.community.exception.CustomizeException;
 import com.tigerff.community.mapper.QuestionMapper;
 import com.tigerff.community.mapper.UserMapper;
 import com.tigerff.community.model.Question;
@@ -109,8 +111,10 @@ public class PublishController {
                 log.info("\n更新数据成功\n" + question);
                 return "redirect:/profile/question";
             }
-            else
-                log.error("\n更新数据失败\n"+question);
+            else {
+                log.error("\n更新数据失败\n" + question);
+                throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
+            }
         }
 
         //发布成功返回到主页面，失败回显刚才的输入，并提示错误信息
