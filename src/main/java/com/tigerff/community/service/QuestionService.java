@@ -1,15 +1,16 @@
 package com.tigerff.community.service;
 
+import com.tigerff.community.dto.CommentDto;
 import com.tigerff.community.dto.PageInfo;
 import com.tigerff.community.dto.QuestionDto;
+import com.tigerff.community.enums.CommentTypeEnum;
 import com.tigerff.community.exception.CustomizeErrorCode;
 import com.tigerff.community.exception.CustomizeException;
+import com.tigerff.community.mapper.CommentMapper;
 import com.tigerff.community.mapper.QuestionExMapper;
 import com.tigerff.community.mapper.QuestionMapper;
 import com.tigerff.community.mapper.UserMapper;
-import com.tigerff.community.model.Question;
-import com.tigerff.community.model.QuestionExample;
-import com.tigerff.community.model.User;
+import com.tigerff.community.model.*;
 import org.apache.ibatis.session.RowBounds;
 import org.springframework.beans.BeanUtils;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -17,6 +18,8 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * @author tigerff
@@ -31,6 +34,8 @@ public class QuestionService {
     QuestionMapper questionMapper;
     @Autowired
     UserMapper userMapper;
+    @Autowired
+    CommentMapper commentMapper;
 
     public PageInfo findQuestions(int page, int size) {
         int totalQuestion = (int)questionMapper.countByExample(new QuestionExample());
@@ -118,6 +123,7 @@ public class QuestionService {
 
     //浏览数加一
     public void incReadCount(Long id) {
-        questionExMapper.incReadCount(id);
+        questionExMapper.incWatchCount(id);
     }
+
 }

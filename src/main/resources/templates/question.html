@@ -8,6 +8,8 @@
     <link rel="stylesheet" href="/css/community.css">
     <script src="/js/jquery-3.4.1.min.js" type="application/javascript"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
+    <script src="/js/community.js" type="application/javascript"></script>
+    <script src="/js/moment.js" type="application/javascript"></script>
 
 
 
@@ -18,13 +20,80 @@
     <div class="main col-lg-9 col-md-12 col-sm-12 col-xs-12">
         <h3 th:text="${questionDto.getTitle()}"></h3>
         作者：<span th:text="${questionDto.user.name}"></span>
-        |发布时间：<span th:text="${#dates.format(questionDto.gmtCreate,'yyyy-MM-dd')}"></span>
-        |阅读数：<span th:text="${questionDto.watchCount}"></span>
+        | 浏览数：<span th:text="${questionDto.watchCount}"></span>
+        | 评论数：<span th:text="${questionDto.readCount}"></span>
+        | 发布时间：<span th:text="${#dates.format(questionDto.gmtCreate,'yyyy-MM-dd')}"></span>
         <hr>
         <span th:text="${questionDto.getContent()}"></span>
         <hr>
-        <hr>
         <a th:href="@{'/publish/'+${questionDto.id}}" th:if="${session.user!=null&&questionDto.user.id==session.user.id}"><span class="glyphicon glyphicon-pencil" aria-hidden="true" style="font-size: 13px">编辑</span></a>
+        <hr>
+        <h4><span th:text="${questionDto.readCount}"></span>个回复</h4>
+        <hr>
+        <!-- 显示评论       -->
+        <div>
+            <div th:each="commentDto :${commentDtoList}">
+                <div class="media">
+                    <div class="media-left">
+                        <img style="width: 45px;height: 45px;" class="img-rounded" th:src="${commentDto.user.avatarUrl}" th:alt="${commentDto.user.name}">
+                    </div>
+                    <div class="media-body">
+                        <p th:text="${commentDto.user.name}" style="font-size: 5px"></p>
+                        <p style="font-size: 14px" th:text="${commentDto.content}"></p>
+                        <div class="menu">
+                            <span class="glyphicon glyphicon-thumbs-up icon" style="margin-right: 10px"></span>
+                            <span class="glyphicon glyphicon-comment icon" th:data="${commentDto.id}" onclick="collapse(this)"></span>
+                            <span th:text="${commentDto.readCount}"></span>
+                            <span class="pull-right" th:text="${#dates.format(commentDto.gmtCreate,'yyyy-MM-dd')}"></span>
+                        </div>
+                        <!-- 二级评论 -->
+                        <div>
+                            <div class="collapse" th:id="cop+${commentDto.id}">
+                            <!-- 二级评论-->
+                                <div th:id="comment+${commentDto.id}"></div>
+                                <!--
+                                <div th:each="commentDto :${commentDtoList}">
+                                    <div class="media">
+                                        <div class="media-left">
+                                            <img style="width: 45px;height: 45px;" class="img-rounded" th:src="${commentDto.user.avatarUrl}" th:alt="${commentDto.user.name}">
+                                        </div>
+                                        <div class="media-body">
+                                            <p style="font-size: 5px">
+                                                <span th:text="${commentDto.user.name}" ></span> |
+                                                <span th:text="${#dates.format(commentDto.gmtCreate,'yyyy-MM-dd')}"></span>
+                                            </p>
+                                            <p style="font-size: 14px" th:text="${commentDto.content}"></p>
+                                        </div>
+                                        <hr>
+                                    </div>
+                                </div>
+                                -->
+                                <!-- 二级评论的评论框 -->
+                                <input type="text" class="form-control" id="content2" placeholder="评论一下。。。" th:id="comment2+${commentDto.id}">
+                                <button type="button" class="btn btn-success pull-right" style="margin-top: 5px" th:data="${commentDto.id}" onclick="comment2(this)">评论</button>
+                            <!--二级评论完-->
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+                <hr>
+            </div>
+        </div>
+        <!-- 提交评论       -->
+        <div style="margin: 20px 0" id="commentClass">
+            <div class="media">
+                <div class="media-left media-middle">
+                    <img style="width: 50px;height: 50px;" class="img-rounded" th:src="${questionDto.user.avatarUrl}" th:alt="${questionDto.user.name}">
+                    <span th:text="${questionDto.user.name}"></span>
+                </div>
+            </div>
+            <input type="hidden" th:value="${questionDto.id}" id="parent_id">
+            <div style="margin: 10px 0">
+                <textarea class="form-control" rows="8" id="comment" name="comment"></textarea>
+            </div>
+            <button type="button" class="btn btn-success" onclick="post()">回复</button>
+        </div>
     </div>
     <div class="list-group col-lg-3 col-sm-12 col-md-12 col-xs-12">
         <div><h4 >发起人</h4></div>

@@ -1,7 +1,10 @@
 package com.tigerff.community.controller;
 
+import com.tigerff.community.dto.CommentDto;
 import com.tigerff.community.dto.QuestionDto;
+import com.tigerff.community.enums.CommentTypeEnum;
 import com.tigerff.community.model.User;
+import com.tigerff.community.service.CommentService;
 import com.tigerff.community.service.QuestionService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -10,6 +13,7 @@ import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 
 import javax.servlet.http.HttpServletRequest;
+import java.util.List;
 
 /**
  * @author tigerff
@@ -20,6 +24,8 @@ import javax.servlet.http.HttpServletRequest;
 public class QuestionController {
     @Autowired
     QuestionService questionService;
+    @Autowired
+    CommentService commentService;
     @GetMapping("/question/{id}")
     public String question(@PathVariable(name = "id") Long id,
                            HttpServletRequest request,
@@ -28,7 +34,10 @@ public class QuestionController {
         QuestionDto questionDto=questionService.findQuestionById(id);
         //增加刷新页面，去增加浏览数
         questionService.incReadCount(id);
+        //获取评论列表
+        List<CommentDto> commentDtoList = commentService.getCommentList(id, CommentTypeEnum.QUESTION);
         model.addAttribute("questionDto",questionDto);
+        model.addAttribute("commentDtoList",commentDtoList);
         return "question";
     }
 }

@@ -9,10 +9,16 @@ package com.tigerff.community.exception;
 public class CustomizeException extends RuntimeException{
     //错误信息
     private String message;
+    private Integer code;
 
     public CustomizeException(CustomizeErrorCodeInter errorCode)
     {
         this.message=errorCode.getMessage();
+        this.code=errorCode.getCode();
+    }
+
+    public Integer getCode() {
+        return code;
     }
 
     @Override

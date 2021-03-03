@@ -8,6 +8,7 @@ import okhttp3.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
+import java.util.concurrent.TimeUnit;
 
 /**
  * @author tigerff
@@ -48,6 +49,7 @@ public class HttpUtils {
      */
     public GithubUser getPersonInfo(String url, String accessToken){
         OkHttpClient client = new OkHttpClient();
+        client.connectTimeoutMillis();
         Request request = new Request.Builder()
                 .header("Authorization","token "+accessToken)
                 .url(url)
