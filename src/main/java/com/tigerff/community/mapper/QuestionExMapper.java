@@ -1,8 +1,12 @@
 package com.tigerff.community.mapper;
 
+import com.tigerff.community.model.Question;
 import org.apache.ibatis.annotations.Mapper;
 import org.apache.ibatis.annotations.Param;
+import org.apache.ibatis.annotations.Select;
 import org.apache.ibatis.annotations.Update;
+
+import java.util.List;
 
 /**
  * @author tigerff
@@ -17,5 +21,8 @@ public interface QuestionExMapper {
     //增加回复数
     @Update("update question set read_count=read_count+1 where id=#{id}")
     void incReadCount(@Param("id") Long id);
+
+    @Select("select * from question where id!=#{id} and tag REGEXP #{tag}")
+    List<Question> findQuestionByTag(@Param("id") Long id,@Param("tag") String tag);
 
 }

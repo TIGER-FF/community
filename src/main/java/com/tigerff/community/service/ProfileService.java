@@ -24,7 +24,7 @@ public class ProfileService {
     @Autowired
     QuestionMapper questionMapper;
 
-    public PageInfo findCurrentQuestion(User user, int page, int size) {
+    public PageInfo<QuestionDto> findCurrentQuestion(User user, int page, int size) {
        // Integer totalQuestion = questionMapper.getCurrentCount(user.getId());
         QuestionExample questionExample = new QuestionExample();
         questionExample.createCriteria()
@@ -34,10 +34,17 @@ public class ProfileService {
         if(page<1)
             page=1;
         if(totalPage>0&&page>totalPage)
+        {
             page=totalPage;
+        }
+        if(totalPage==0)
+        {
+            totalPage=1;
+            page=totalPage;
+        }
         if(size<=0)
             size=5;
-        PageInfo pageInfo=new PageInfo();
+        PageInfo<QuestionDto> pageInfo=new PageInfo<>();
         /**
          * page =1
          * size=5

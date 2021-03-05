@@ -53,8 +53,9 @@ public class CommentController {
         comment.setGmtCreate(System.currentTimeMillis());
         comment.setGmtUpdate(comment.getGmtCreate());
         comment.setLikeCount(0);
+        comment.setReadCount(0);
         comment.setCommentator(user.getId());
-        int insert = commentService.insert(comment);
+        int insert = commentService.insert(user,comment);
         if(insert==1)
         {
             log.info("插入评论成功-----"+comment);

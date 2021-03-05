@@ -43,7 +43,14 @@ public class QuestionService {
         if(page<1)
             page=1;
         if(totalPage>0&&page>totalPage)
+        {
             page=totalPage;
+        }
+        if(totalPage==0)
+        {
+            totalPage=1;
+            page=totalPage;
+        }
         if(size<=0)
             size=5;
         PageInfo pageInfo=new PageInfo();
@@ -55,7 +62,9 @@ public class QuestionService {
          */
         pageInfo.setCurrentPage(page);
         //List<Question> questions=questionMapper.findQuestions(size*(page-1),size);
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(new QuestionExample(), new RowBounds(size * (page - 1), size));
+        QuestionExample questionExample = new QuestionExample();
+        questionExample.setOrderByClause("gmt_create desc");
+        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(size * (page - 1), size));
 
         ArrayList<QuestionDto> questionDtos=new ArrayList<>();
 
@@ -126,4 +135,8 @@ public class QuestionService {
         questionExMapper.incWatchCount(id);
     }
 
+    public List<Question> findQuestionByTag(Long id, String tag) {
+        tag=tag.replaceAll(",","|");
+        return questionExMapper.findQuestionByTag(id,tag);
+    }
 }

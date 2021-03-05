@@ -34,8 +34,10 @@ public class CommentService {
     UserMapper userMapper;
     @Autowired
     CommentExMapper commentExMapper;
+    @Autowired
+    NotificationService notificationService;
     @Transactional//加上事务的注解
-    public int insert(Comment comment) {
+    public int insert(User user,Comment comment) {
         //判断问题的 id 是否为空
         if(comment.getParentId()==null)
         {
@@ -55,6 +57,9 @@ public class CommentService {
             Comment selectComment = commentMapper.selectByPrimaryKey(comment.getParentId());
             if(selectComment==null)
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
+            //创建通知
+            notificationService.createNotification(user.getId(),user.getName(),comment.getParentId(),
+                    comment.getContent(),comment.getType(),0,comment.getCommentator());
         }else
         {
             //直接回复的是问题--一级
@@ -62,10 +67,17 @@ public class CommentService {
             Question question = questionMapper.selectByPrimaryKey(comment.getParentId());
             if(question==null)
                 throw new CustomizeException(CustomizeErrorCode.QUESTION_NOT_FOUND);
-            questionExMapper.incReadCount(comment.getParentId());
+            commentExMapper.incReadCount(comment.getParentId());
+            // 创建提醒 notification
+            notificationService.createNotification(user.getId(),user.getName(),comment.getParentId(),
+                    question.getTitle(),comment.getType(),0,comment.getCommentator());
         }
+
+
+
         return commentMapper.insert(comment);
     }
+
     /**
      * 获取回复问题的列表
      * @param id 问题的 id

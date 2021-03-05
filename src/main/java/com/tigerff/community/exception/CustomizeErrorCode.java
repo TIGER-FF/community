@@ -12,7 +12,8 @@ public enum CustomizeErrorCode implements CustomizeErrorCodeInter{
     SYS_ERROR(2004,"换个姿势再来一次"),
     COMMENT_TYPE_ERROR(2005,"评论类型错误或者不存在"),
     COMMENT_NOT_FOUND(2006,"评论类型错误或者不存在"),
-    COMMENT_IS_EMPTY(2006,"评论类不能为空")
+    COMMENT_IS_EMPTY(2006,"评论类不能为空"),
+    NOTIFICATION_NOT_FOUND(2007,"这个通知我是找不到,是不是搞错了")
     ;
 
 

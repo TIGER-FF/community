@@ -25,6 +25,7 @@
                 </form>
                 <ul class="nav navbar-nav navbar-right">
                     <li th:if="${session.user==null}"><a href="https://github.com/login/oauth/authorize?client_id=c2c9b12364c78c11da16&redirect_uri=http://localhost:8080/callback&scope=user&state=1">登录</a></li>
+                    <li th:if="${session.user!=null}" role="presentation"><a href="/profile/notification">通知<span class="badge" th:text="${session.unReadCount}"></span></a></li>
                     <li th:if="${session.user!=null}"><a href="/publish" > <span class="glyphicon glyphicon-plus" aria-hidden="true">发起</span></a></li>
                     <li class="dropdown" th:if="${session.user!=null}">
                         <a href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-haspopup="true" aria-expanded="false" ><span th:text="${session.user.getName()}"></span><span class="caret"></span></a>

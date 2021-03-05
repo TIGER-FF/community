@@ -63,10 +63,12 @@ function collapse(t){
     var id=t.getAttribute("data");
     var clazz=$("#cop"+id).attr("class");
     var subCommentContainer = $("#comment" + id);
-    if(clazz.indexOf("in")!=-1)
+    if(clazz.indexOf("in")==-1)
     {
         subCommentContainer.html("");
+        $.ajaxSettings.async = false; //设置getJson同步
         $.getJSON("/comment/"+id,function (data) {
+            console.log(data);
             $.each(data.data.reverse(), function (index, comment) {
                 var mediaLeftElement = $("<div/>", {
                     "class": "media-left"
@@ -100,6 +102,7 @@ function collapse(t){
                 subCommentContainer.prepend(commentElement);
             });
         });
+        $.ajaxSettings.async = false; //设置getJson同步
     }
     t.classList.toggle("active");
     //toggleClass 回去判断 class 中有没有 in 没有的话个给加上 in 有就去掉

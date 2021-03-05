@@ -1,7 +1,11 @@
 package com.tigerff.community.controller;
 
+import com.tigerff.community.dto.NotificationDto;
 import com.tigerff.community.dto.PageInfo;
+import com.tigerff.community.dto.QuestionDto;
+import com.tigerff.community.model.Notification;
 import com.tigerff.community.model.User;
+import com.tigerff.community.service.NotificationService;
 import com.tigerff.community.service.ProfileService;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
@@ -22,6 +26,8 @@ import javax.servlet.http.HttpSession;
 public class ProfileController {
     @Autowired
     ProfileService profileService;
+    @Autowired
+    NotificationService notificationService;
     @GetMapping("/profile/{action}")
     public String myQuestion(@PathVariable(name = "action") String action,
                              @RequestParam(name = "page",defaultValue = "1") int page,
@@ -40,11 +46,14 @@ public class ProfileController {
 
         if ("question".equals(action)) {
             model.addAttribute("section","question");
-            PageInfo pageInfo=profileService.findCurrentQuestion(user,page,size);
+            PageInfo<QuestionDto> pageInfo=profileService.findCurrentQuestion(user,page,size);
             model.addAttribute("pageInfo",pageInfo);
-            return "profile";
+        }else if("notification".equals(action))
+        {
+            model.addAttribute("section","notification");
+            PageInfo<NotificationDto> notificationPageInfo=notificationService.findCurrentNotification(user,page,size);
+            model.addAttribute("pageInfo",notificationPageInfo);
         }
-        else
-            return "redirect:/";
+        return "profile";
     }
 }

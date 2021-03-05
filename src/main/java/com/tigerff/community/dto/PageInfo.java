@@ -15,10 +15,10 @@ import java.util.List;
 @Data
 @AllArgsConstructor
 @NoArgsConstructor
-public class PageInfo {
+public class PageInfo<T> {
     private Integer currentPage;
     private Integer totalPage;
-    private ArrayList<QuestionDto> questionDtos=new ArrayList<>();
+    private ArrayList<T> questionDtos=new ArrayList<>();
     //页码
     private ArrayList<Integer> list=new ArrayList<>();
     //判断是否是否是第一页

@@ -24,8 +24,12 @@
         | 评论数：<span th:text="${questionDto.readCount}"></span>
         | 发布时间：<span th:text="${#dates.format(questionDto.gmtCreate,'yyyy-MM-dd')}"></span>
         <hr>
+        <!--内容-->
         <span th:text="${questionDto.getContent()}"></span>
         <hr>
+        <span style="margin-right: 5px" class="label label-info" th:each="tag:${questionDto.tag.split(',')}" th:text="${tag}"></span>
+        <hr>
+        <!--编辑-->
         <a th:href="@{'/publish/'+${questionDto.id}}" th:if="${session.user!=null&&questionDto.user.id==session.user.id}"><span class="glyphicon glyphicon-pencil" aria-hidden="true" style="font-size: 13px">编辑</span></a>
         <hr>
         <h4><span th:text="${questionDto.readCount}"></span>个回复</h4>
@@ -106,7 +110,16 @@
             </div>
         </div>
         <hr>
-        <h4 >相关问题</h4>
+        <div>
+            <h4 >相关问题</h4>
+            <hr>
+            <ul class="questionT">
+                <li th:each="questionT:${questionTag}">
+                    <a th:href="@{'/question/'+${questionT.id}}"><span th:text="${questionT.title}"></span></a>
+                </li>
+            </ul>
+        </div>
+
     </div>
 </div>
 </body>

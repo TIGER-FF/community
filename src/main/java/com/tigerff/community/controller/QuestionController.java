@@ -3,6 +3,7 @@ package com.tigerff.community.controller;
 import com.tigerff.community.dto.CommentDto;
 import com.tigerff.community.dto.QuestionDto;
 import com.tigerff.community.enums.CommentTypeEnum;
+import com.tigerff.community.model.Question;
 import com.tigerff.community.model.User;
 import com.tigerff.community.service.CommentService;
 import com.tigerff.community.service.QuestionService;
@@ -36,8 +37,11 @@ public class QuestionController {
         questionService.incReadCount(id);
         //获取评论列表
         List<CommentDto> commentDtoList = commentService.getCommentList(id, CommentTypeEnum.QUESTION);
+        //获取和问题相关的问题
+        List<Question> questionTag=questionService.findQuestionByTag(id,questionDto.getTag());
         model.addAttribute("questionDto",questionDto);
         model.addAttribute("commentDtoList",commentDtoList);
+        model.addAttribute("questionTag",questionTag);
         return "question";
     }
 }
