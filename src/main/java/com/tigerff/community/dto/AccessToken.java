@@ -4,6 +4,11 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.NoArgsConstructor;
 
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 /**
  * @author tigerff
  * @version 1.0
@@ -18,4 +23,5 @@ public class AccessToken {
     private String code;
     private String redirect_uri;
     private String state;
+    private Map<String,Map<String,Integer>> connection_opts=new HashMap<>();
 }

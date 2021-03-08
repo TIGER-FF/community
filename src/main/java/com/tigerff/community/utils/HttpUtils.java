@@ -1,14 +1,13 @@
 package com.tigerff.community.utils;
 
 import com.alibaba.fastjson.JSON;
-import com.alibaba.fastjson.JSONObject;
 import com.tigerff.community.dto.AccessToken;
 import com.tigerff.community.dto.GithubUser;
 import okhttp3.*;
 import org.springframework.stereotype.Component;
 
 import java.io.IOException;
-import java.util.concurrent.TimeUnit;
+import java.util.Map;
 
 /**
  * @author tigerff
@@ -26,7 +25,8 @@ public class HttpUtils {
     {
         MediaType mediaType = MediaType.get("application/json; charset=utf-8");
         OkHttpClient client = new OkHttpClient();
-        RequestBody body = RequestBody.create(mediaType, JSON.toJSONString(accessToken));
+        String jsonString = JSON.toJSONString(accessToken);
+        RequestBody body = RequestBody.create(mediaType,jsonString );
         Request request = new Request.Builder()
                 .url("https://github.com/login/oauth/access_token")
                 .post(body)
@@ -56,7 +56,14 @@ public class HttpUtils {
                 .build();
         try (Response response = client.newCall(request).execute()) {
             //fastjson 工具中自带开启了 驼峰命名法
-            return JSON.parseObject(response.body().string(), GithubUser.class);
+            GithubUser githubUser = JSON.parseObject(response.body().string(), GithubUser.class);
+            if(githubUser.getName()==null)
+            {
+                //有的人没有设置 name 那就将登录 login 自段的值赋值给 name
+                Map<String,String> temp = JSON.parseObject(response.body().toString(), Map.class);
+                githubUser.setName(temp.get("login"));
+            }
+            return githubUser;
         }catch (IOException e)
         {
             e.printStackTrace();

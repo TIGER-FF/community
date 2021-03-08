@@ -42,6 +42,7 @@
             <p th:each="notificationDto:${pageInfo.questionDtos}" style="margin-bottom: 10px">
                 <span th:text="${notificationDto.notifierName+''+notificationDto.typeName}"></span>
                 <a th:href="@{'/notification/'+${notificationDto.id}}"><span th:text="${notificationDto.outerTitle}"></span></a>
+                <span th:if="${notificationDto.status==0}" style="color: red">未读</span>
             </p>
         </div>
 

@@ -24,5 +24,9 @@ public interface QuestionExMapper {
 
     @Select("select * from question where id!=#{id} and tag REGEXP #{tag}")
     List<Question> findQuestionByTag(@Param("id") Long id,@Param("tag") String tag);
-
+    @Select("select count(*) from question where title REGEXP #{search}")
+    int countByExample(@Param("search") String search);
+    //搜索
+    @Select("select * from question  where title REGEXP #{search} limit #{page},#{size}")
+    List<Question> selectByExampleWithRowbounds(@Param("search") String search,@Param("page") int i, @Param("size") int size);
 }

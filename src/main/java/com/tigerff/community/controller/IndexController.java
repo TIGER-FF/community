@@ -23,7 +23,8 @@ public class IndexController {
     @Autowired
     QuestionService questionService;
     @GetMapping("/")
-    public String index(HttpServletRequest request,
+    // 加上搜索功能
+    public String index(@RequestParam(name = "search",required = false) String search,
                         @RequestParam(name = "page",defaultValue = "1") int page,
                         @RequestParam(name = "size",defaultValue = "5") int size,
                         Model model)
@@ -44,8 +45,10 @@ public class IndexController {
 //        }
         //每次访问主页，去看数据中提问，并展示到主页--分页--并且在返回结果中包含是谁提问的
         //提问人信息//
-        PageInfo pageInfo=questionService.findQuestions(page,size);
+        PageInfo pageInfo=questionService.findQuestions(search,page,size);
         model.addAttribute("pageInfo",pageInfo);
+        //添加搜索
+        model.addAttribute("search",search);
         return "index";
     }
 }

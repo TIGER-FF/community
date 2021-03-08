@@ -17,7 +17,9 @@ import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 /**
@@ -58,6 +60,12 @@ public class OAuthController {
         accessToken.setCode(code);
         accessToken.setRedirect_uri(redirect_uri);
         accessToken.setState(state);
+        //connection_opts: { request: { timeout: 300 }
+        Map<String,Integer> map2=new HashMap<>();
+        map2.put("timeout",300000);
+        Map<String,Map<String,Integer>> map1=new HashMap<>();
+        map1.put("request",map2);
+        accessToken.setConnection_opts(map1);
         //发送 post 请求到 OAuth 获取到 accessToken
         String responseStr = httpUtils.getAccessToken(accessToken);
         //根据是否获取到 access_token 判断是否登录成功

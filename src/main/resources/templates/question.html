@@ -6,10 +6,16 @@
     <link rel="stylesheet" href="/css/bootstrap.min.css">
     <link rel="stylesheet" href="/css/bootstrap-theme.min.css">
     <link rel="stylesheet" href="/css/community.css">
+    <link rel="stylesheet" href="/css/editormd.preview.min.css">
+
     <script src="/js/jquery-3.4.1.min.js" type="application/javascript"></script>
     <script src="/js/bootstrap.min.js" type="application/javascript"></script>
     <script src="/js/community.js" type="application/javascript"></script>
     <script src="/js/moment.js" type="application/javascript"></script>
+    <script src="/js/editormd.min.js" type="application/javascript"></script>
+    <script src="/js/lib/marked.min.js" type="application/javascript"></script>
+    <script src="/js/lib/prettify.min.js" type="application/javascript"></script>
+
 
 
 
@@ -25,7 +31,20 @@
         | 发布时间：<span th:text="${#dates.format(questionDto.gmtCreate,'yyyy-MM-dd')}"></span>
         <hr>
         <!--内容-->
-        <span th:text="${questionDto.getContent()}"></span>
+        <div id="question-markdown-view">
+            <!-- Server-side output Markdown text -->
+            <textarea style="display:none;" th:text="${questionDto.getContent()}"></textarea>
+        </div>
+        <span ></span>
+
+        <!-- 将 markdown 的内容转化为 html -->
+        <script type="text/javascript">
+            $(function() {
+                var testView = editormd.markdownToHTML("question-markdown-view", {
+                });
+            });
+        </script>
+
         <hr>
         <span style="margin-right: 5px" class="label label-info" th:each="tag:${questionDto.tag.split(',')}" th:text="${tag}"></span>
         <hr>
@@ -88,8 +107,8 @@
         <div style="margin: 20px 0" id="commentClass">
             <div class="media">
                 <div class="media-left media-middle">
-                    <img style="width: 50px;height: 50px;" class="img-rounded" th:src="${questionDto.user.avatarUrl}" th:alt="${questionDto.user.name}">
-                    <span th:text="${questionDto.user.name}"></span>
+                    <img style="width: 50px;height: 50px;" class="img-rounded" th:src="${session.user!=null?session.user.avatarUrl:'/images/no.png'}" >
+                    <span th:text="${session.user!=null?session.user.name:'匿名用户'}"></span>
                 </div>
             </div>
             <input type="hidden" th:value="${questionDto.id}" id="parent_id">

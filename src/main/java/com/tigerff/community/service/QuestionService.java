@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.StringJoiner;
 import java.util.stream.Collectors;
 
 /**
@@ -37,8 +38,21 @@ public class QuestionService {
     @Autowired
     CommentMapper commentMapper;
 
-    public PageInfo findQuestions(int page, int size) {
-        int totalQuestion = (int)questionMapper.countByExample(new QuestionExample());
+    public PageInfo findQuestions(String search,int page, int size) {
+        QuestionExample questionExample1 = new QuestionExample();
+        StringJoiner sj=new StringJoiner("|");
+        int totalQuestion=0;
+        //添加搜索功能
+        if(search!=null&&(!"".equals(search)))
+        {
+            String[] s = search.split(" ");
+            for(String p:s)
+                sj.add(p);
+            questionExample1.setOrderByClause("REGEXP"+sj.toString());
+             totalQuestion= questionExMapper.countByExample(sj.toString());
+        }
+        else
+            totalQuestion=(int)questionMapper.countByExample(new QuestionExample());
         Integer totalPage=(int) Math.ceil(totalQuestion*1.0/size);
         if(page<1)
             page=1;
@@ -62,9 +76,17 @@ public class QuestionService {
          */
         pageInfo.setCurrentPage(page);
         //List<Question> questions=questionMapper.findQuestions(size*(page-1),size);
-        QuestionExample questionExample = new QuestionExample();
-        questionExample.setOrderByClause("gmt_create desc");
-        List<Question> questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(size * (page - 1), size));
+        //添加搜索功能
+        List<Question> questions=null;
+        if(search!=null&&(!"".equals(search))) {
+            questions=questionExMapper.selectByExampleWithRowbounds(sj.toString(),size * (page - 1),size);
+        }
+        else
+        {
+            QuestionExample questionExample = new QuestionExample();
+            questionExample.setOrderByClause("gmt_create desc");
+            questions = questionMapper.selectByExampleWithRowbounds(questionExample, new RowBounds(size * (page - 1), size));
+        }
 
         ArrayList<QuestionDto> questionDtos=new ArrayList<>();
 

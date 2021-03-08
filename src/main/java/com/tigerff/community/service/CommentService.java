@@ -59,7 +59,7 @@ public class CommentService {
                 throw new CustomizeException(CustomizeErrorCode.COMMENT_NOT_FOUND);
             //创建通知
             notificationService.createNotification(user.getId(),user.getName(),comment.getParentId(),
-                    comment.getContent(),comment.getType(),0,comment.getCommentator());
+                    selectComment.getContent(),comment.getType(),0,comment.getCommentator());
         }else
         {
             //直接回复的是问题--一级
