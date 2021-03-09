@@ -20,12 +20,12 @@
             <hr>
             <div class="media" style="margin-bottom: 15px" th:each="questionDto : ${pageInfo.questionDtos}">
                 <div class="media-left media-middle">
-                    <a th:href="@{'/question/'+${questionDto.id}}">
                         <img style="width: 50px;height: 50px;" class="img-rounded" th:src="${questionDto.user.avatarUrl}" th:alt="${questionDto.user.name}">
-                    </a>
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading" th:text="${questionDto.title}"></h4>
+                    <a th:href="@{'/question/'+${questionDto.id}}">
+                        <h4 class="media-heading" th:text="${questionDto.title}"></h4>
+                    </a>
                     • <span th:text="${questionDto.readCount}"></span> 个评论 • <span th:text="${questionDto.watchCount}"></span> 次浏览 •  <span th:text="${questionDto.likeCount}"></span> 次点赞 •
                     <span th:text="${#dates.format(questionDto.gmtCreate,'yyyy-MM-dd')}"></span>
                 </div>
@@ -57,8 +57,18 @@
             </nav>
         </div>
         <div class="col-lg-3 col-sm-12 col-md-12 col-xs-12">
-            <h4><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span> 热门话题</h4>
+            <h4><span class="glyphicon glyphicon-menu-hamburger" aria-hidden="true"></span> 站长推荐 </h4>
             <hr>
+            <div >
+                <div>
+                    <img src="/images/1.webp" height="250px" width="200px">
+                    <a href="https://www.bilibili.com/bangumi/play/ss36167/?from=search&seid=18049841037829583912"><h5>转生为蜘蛛那又怎么样动漫</h5></a>
+                </div>
+                <div>
+                    <img src="/images/2.webp" height="250px" width="200px">
+                    <a href="https://www.bilibili.com/bangumi/play/ss36170/?from=search&seid=6077108894606257715"><h5>关于我转生为史莱姆这件事第二季</h5></a>
+                </div>
+            </div>
         </div>
     </div>
 </body>

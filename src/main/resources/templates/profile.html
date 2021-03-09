@@ -22,12 +22,12 @@
             <hr>
             <div class="media" style="margin-bottom: 15px" th:each="questionDto : ${pageInfo.questionDtos}">
                 <div class="media-left media-middle">
-                    <a th:href="@{'/question/'+${questionDto.id}}">
-                        <img style="width: 50px;height: 50px;" class="img-rounded" th:src="${questionDto.user.avatarUrl}" th:alt="${questionDto.user.name}">
-                    </a>
+                    <img style="width: 50px;height: 50px;" class="img-rounded" th:src="${questionDto.user.avatarUrl}" th:alt="${questionDto.user.name}">
                 </div>
                 <div class="media-body">
-                    <h4 class="media-heading" th:text="${questionDto.title}"></h4>
+                    <a th:href="@{'/question/'+${questionDto.id}}">
+                        <h4 class="media-heading" th:text="${questionDto.title}"></h4>
+                    </a>
                     • <span th:text="${questionDto.readCount}"></span> 个评论 • <span th:text="${questionDto.watchCount}"></span> 次浏览 •  <span th:text="${questionDto.likeCount}"></span> 次点赞 •
                     <span th:text="${#dates.format(questionDto.gmtCreate,'yyyy-MM-dd')}"></span>
                 </div>

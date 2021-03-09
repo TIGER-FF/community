@@ -26,7 +26,7 @@ public class IndexController {
     // 加上搜索功能
     public String index(@RequestParam(name = "search",required = false) String search,
                         @RequestParam(name = "page",defaultValue = "1") int page,
-                        @RequestParam(name = "size",defaultValue = "5") int size,
+                        @RequestParam(name = "size",defaultValue = "7") int size,
                         Model model)
     {
         //这一块重复代码加在了 interceptor 中 2020.2.28
